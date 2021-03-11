@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatOrDog</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Zilla+Slab+Highlight" rel="stylesheet">
+</head>
+
+<body>
+    <div id="grid">
+        <main>
+            <form enctype="multipart/form-data" name="registerForm">
+                <p>Upload your image</p>
+                <div id="inform">
+                    <div id="fs">
+                        <label>
+                            <input type="file" id="files" text=".file" name="photo" accept="image/*,image/jpeg">
+                            <span>&#10010; .file</span>
+                        </label>
+                    </div>
+                    <input id="submit" type="submit" value="&#10148; Send">
+                </div>
+            </form>
+            <br>
+            <ul id="list"></ul>
+            <canvas id="ImgCanvasTest" width="150" height="150"></canvas>
+        </main>
+        <header>
+            <p>Cat_Or_Dog</p>
+        </header>
+        <aside class="left-sidebar" id="catBar">
+            <img src="./png/cat.png" alt="it_is_cat">
+            <p>Cat</p>
+            <p id="catVal"></p>
+        </aside>
+        <aside class="right-sidebar" id="dogBar">
+            <img src="./png/dog.png" alt="it_is_dog">
+            <p>Dog</p>
+            <p id="dogVal"></p>
+        </aside>
+        <footer>
+            <p>NNIE 2021</p>
+        </footer>
+    </div>
+
+</body>
+
+<script>
+    document.getElementById("submit").addEventListener("click", function (e) {
+        e.preventDefault();
+        // получаем данные формы
+        let userImg = imgData;
+        const rgb24 = new Uint8Array((imgData.length / 4) * 3);
+        var i = 0;
+        var j = 0;
+        while (i < imgData.length) {
+            rgb24[j++] = imgData[i++];
+            rgb24[j++] = imgData[i++];
+            rgb24[j++] = imgData[i++];
+            i++;
+        }
+        console.log(rgb24);
+        // сериализуем данные в json
+        let user = JSON.stringify({
+            userImg: Array.from(rgb24),
+        });
+        let request = new XMLHttpRequest();
+        // посылаем запрос на адрес "/upload_image"
+        request.open("POST", "/upload_image", true);
+        request.setRequestHeader("Content-Type", "application/json");
+        request.addEventListener("load", function () {
+            // получаем и парсим ответ сервера
+            let unswerNum = JSON.parse(request.response);
+            if (unswerNum == "Sorry. Img Bad :/") {
+                document.getElementById("catVal").innerHTML = unswerNum;
+                document.getElementById("dogVal").innerHTML = unswerNum;
+                document.getElementById("catBar").style.backgroundColor =
+                    "rgba(255, 0, 0, 0.4)";
+                document.getElementById("dogBar").style.backgroundColor =
+                    "rgba(255, 0, 0, 0.4)";
+            } else if (unswerNum < 0.5) {
+                document.getElementById("catBar").style.backgroundColor =
+                    "rgba(0, 255, 170, 0.4)";
+                document.getElementById("dogBar").style.backgroundColor =
+                    "transparent";
+                document.getElementById("catVal").innerHTML = ((1 - unswerNum.toFixed(4)) *
+                    100).toFixed(2) + '%';
+                document.getElementById("dogVal").innerHTML = " ";
+            } else {
+                document.getElementById("dogBar").style.backgroundColor =
+                    "rgba(0, 255, 170, 0.4)";
+                document.getElementById("catBar").style.backgroundColor =
+                    "transparent";
+                document.getElementById("dogVal").innerHTML = (unswerNum.toFixed(4) * 100)
+                    .toFixed(2) + '%';
+                document.getElementById("catVal").innerHTML = " ";
+            }
+            console.log(unswerNum); // смотрим ответ сервера
+        });
+        request.send(user);
+    });
+</script>
+
+<script>
+    var fi = 0;
+
+    function showFile(e) {
+        var files = e.target.files;
+        for (var i = 0, f; f = files[i]; i++) {
+            if (!f.type.match('image.*')) continue;
+            var fr = new FileReader();
+            fr.onload = (function (theFile) {
+                return function (e) {
+                    if (fi == 0) {
+                        var li = document.createElement('li');
+                        li.id = "MyLi";
+                        fi++;
+                    } else {
+                        var li = document.getElementById('MyLi');
+                    }
+                    li.innerHTML = "";
+                    let myImg = document.createElement("img");
+                    myImg.src = e.target.result;
+                    myImg.onload = function () {
+                        let canvas = document.getElementById('ImgCanvasTest');
+                        let ctx = canvas.getContext("2d");
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(myImg, 0, 0, 150, 150);
+                        window.imgData = ctx.getImageData(0, 0, 150, 150).data;
+                        console.log(canvas, ctx, imgData);
+                    }
+                    li.appendChild(myImg);
+                    document.getElementById('list').insertBefore(li, null);
+                };
+            })(f);
+            fr.readAsDataURL(f);
+        }
+    }
+    document.getElementById('files').addEventListener('change', showFile, false);
+</script>
+
+</html>
