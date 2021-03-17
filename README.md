@@ -40,7 +40,7 @@ pip install flask
 2. python train_1.py
 3. python train_2.py
 4. python train_3.py
-5. python serverPy_4.py
+5. python serverPy_4.py*
 6. node server.js
 7. Перейти по адресу http://localhost:3000/
 
@@ -49,4 +49,12 @@ pip install flask
 3. Создание и обучение верхнего слоя (2 слоя по 64 нейрона)
 4. Объединение верхнего и нижних слоев модели, обучение общей модели
 5. Создание flask сервера, с обученной моделью
+```
+*В файле serverPy_4.py найдите строчку (17) типа:
+
+weights_filename='new_model_weights/weights-improvement-02-0.88.hdf5'
+
+Вставьте свое имя файла, которое получила ваша модель на 4м шаге в папке new_model_weights
+Например: weights-improvement-03-0.90.hdf5
+```
 6. Создание сервера web-приложения
