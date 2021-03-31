@@ -59,3 +59,138 @@ weights_filename='new_model_weights/weights-improvement-02-0.88.hdf5'
 Например: weights-improvement-03-0.90.hdf5
 ```
 6. Создание сервера web-приложения
+
+## Установка библиотек в Azure DevOps
+Список команд:
+1) sudo su
+
+2) apt update
+
+3) apt install git
+
+4) git version
+
+5) cd /usr/
+
+6) git clone https://github.com/ForoFora/CatDog.git
+
+7) cd CatDog
+
+8) curl -sL https://deb.nodesource.com/setup_15.x | sudo bash -
+
+9) sudo apt install nodejs
+
+10) apt install python3.8
+
+11) alias python=python3.8
+
+12) apt install python3-pip
+
+13) python -m pip install pip
+
+14) update-alternatives --remove python /usr/bin/python2
+
+15) update-alternatives --install /usr/bin/python python /usr/bin/python3.8 10
+
+16) python -m pip install --upgrade pip
+
+17) pip install --upgrade tensorflow
+
+18) pip install pillow
+
+19) pip install numpy
+
+20) pip install keras
+
+21) pip install flask
+
+22) apt install unrar
+
+23) unrar x data.rar
+
+24) python train_1.py 
+
+25) python train_2.py
+
+26) python train_3.py
+
+27) cd new_model_weights/
+
+28) ls -la
+
+29) cd ..
+
+30) nano serverPy_4.py
+
+31) cat serverPy_4.py
+
+32) python serverPy_4.py
+
+33) Ctrl + С
+
+34) apt install node-gyp
+
+35) apt install npm
+
+36) npm install
+
+37) nano server.js
+
+38) cat server.js
+
+39) node server.js
+
+40) Ctrl + С
+
+41) cd /etc/systemd/system
+
+42) touch catOrDogFront.service
+
+43) nano catOrDogFront.service
+```
+[Unit]
+Description=Node JS server for CatDog project
+After=network.target
+
+[Service]
+User=root
+TimeoutSec=0
+WorkingDirectory=/usr/CatDog/
+ExecStart=/usr/bin/node server.js
+KillMode=process
+
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=default.target
+```
+
+44) touch catOrDogNN.service
+
+45) nano catOrDogNN.service
+```
+[Unit]
+Description=Neural network for CatDog project
+After=network.target
+
+[Service]
+User=root
+TimeoutSec=0
+WorkingDirectory=/usr/CatDog/
+ExecStart=/usr/bin/python serverPy_4.py
+KillMode=process
+
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=default.target
+```
+46) systemctl start catOrDogFront.service
+
+47) systemctl status catOrDogFront.service
+
+48) systemctl start catOrDogNN.service
+
+49) systemctl status catOrDogNN.service
